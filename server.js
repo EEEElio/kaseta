@@ -1,4 +1,16 @@
 const dotenv = require("dotenv");
+const http = require("http");
+
+//connect to database
+
+const config = require("./config")[process.env.NODE_ENV || "development"];
+const connectToPostgres = require("./util/connectToPostgres");
+
+config.postgres.client = connectToPostgres();
+
+const app = require("./app")(config);
+
+dotenv.config({ path: "./config.env" });
 
 process.on("uncaughtException", (err) => {
   console.log("UNHANDELED EXEPTION! Shutting down...");
@@ -6,10 +18,10 @@ process.on("uncaughtException", (err) => {
   process.exit(1);
 });
 
-dotenv.config({ path: "./config.env" });
-
 const port = process.env.PORT || 3000;
-const server = app.listen(port, () => {
+
+const server = http.createServer(app);
+server.listen(port, () => {
   console.log(`App running on port ${port}....`);
 });
 
