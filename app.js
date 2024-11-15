@@ -9,6 +9,7 @@ const app = express();
 module.exports = (config) => {
   const log = config.log();
 
+  app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
 
   //Development logging
